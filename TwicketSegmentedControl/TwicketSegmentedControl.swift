@@ -271,13 +271,10 @@ open class TwicketSegmentedControl: UIControl {
         label.textAlignment = .center
         label.textColor = selected ? highlightTextColor : defaultTextColor
         var fontSize = font.pointSize
-        print("fontSize",fontSize)
-        print("label.text",text)
         var fontIsSet = true
         while fontIsSet == true {
             
             if var width = label.text?.getWidth(withConstraintedHeight: 42, font: font.withSize(fontSize) ?? UIFont.systemFont(ofSize: fontSize)) {
-                print("width", width)
                 if width <= segmentWidth {
                     fontIsSet = false
                 }else {
@@ -291,7 +288,6 @@ open class TwicketSegmentedControl: UIControl {
         }
         label.adjustsFontSizeToFitWidth = true
         label.font = font.withSize(fontSize) ?? UIFont.systemFont(ofSize: fontSize)
-        print("label.font", label.font)
         label.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin, .flexibleWidth]
         return label
     }
