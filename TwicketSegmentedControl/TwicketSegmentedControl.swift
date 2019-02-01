@@ -106,7 +106,7 @@ open class TwicketSegmentedControl: UIControl {
         }
     }
     
-    open var font: UIFont = UIFont.systemFont(ofSize: 15, weight: UIFontWeightMedium) {
+    open var font: UIFont = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.medium) {
         didSet {
             updateLabelsFont(with: font)
         }
@@ -270,7 +270,28 @@ open class TwicketSegmentedControl: UIControl {
         label.text = text
         label.textAlignment = .center
         label.textColor = selected ? highlightTextColor : defaultTextColor
-        label.font = font
+        var fontSize = font.pointSize
+        print("fontSize",fontSize)
+        print("label.text",text)
+        var fontIsSet = true
+        while fontIsSet == true {
+            
+            if var width = label.text?.getWidth(withConstraintedHeight: 42, font: font.withSize(fontSize) ?? UIFont.systemFont(ofSize: fontSize)) {
+                print("width", width)
+                if width <= segmentWidth {
+                    fontIsSet = false
+                }else {
+                    if fontSize > 1 {
+                        fontSize -= 1
+                    }else {
+                        fontIsSet = false
+                    }
+                }
+            }
+        }
+        label.adjustsFontSizeToFitWidth = true
+        label.font = font.withSize(fontSize) ?? UIFont.systemFont(ofSize: fontSize)
+        print("label.font", label.font)
         label.autoresizingMask = [.flexibleLeftMargin, .flexibleRightMargin, .flexibleWidth]
         return label
     }
@@ -351,5 +372,16 @@ open class TwicketSegmentedControl: UIControl {
             self.sliderView.center.x = position
         }
     }
+}
+
+extension String {
+    
+    func getWidth(withConstraintedHeight height: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: font], context: nil)
+        
+        return ceil(boundingBox.width)
+    }
+    
 }
 
